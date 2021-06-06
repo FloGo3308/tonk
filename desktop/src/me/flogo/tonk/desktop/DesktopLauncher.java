@@ -14,6 +14,7 @@ public class DesktopLauncher {
 		config.vSyncEnabled = Settings.vSync;
 		config.foregroundFPS = Settings.fpsLimit;
 		config.backgroundFPS = Settings.fpsLimit;
+//		config.addIcon("tonk_logo_new.png", Files.FileType.Internal);
 		new LwjglApplication(new Tonk(LaunchType.DESKTOP), config);
 	}
 }
