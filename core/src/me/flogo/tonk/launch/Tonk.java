@@ -2,6 +2,7 @@ package me.flogo.tonk.launch;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.utils.Array;
 public class Tonk extends ApplicationAdapter {
 	public static LaunchType launchType;
 	public boolean loading;
+	public boolean devMode = true;
 
 	public ModelBatch modelBatch;
 	public AssetManager assets;
@@ -54,7 +56,7 @@ public class Tonk extends ApplicationAdapter {
 		Gdx.input.setInputProcessor(camController);
 
 		assets = new AssetManager();
-		assets.load("models/ship.obj", Model.class);
+		assets.load("models/ship.g3db", Model.class);
 		loading = true;
 
 //		ModelBuilder modelBuilder = new ModelBuilder();
@@ -62,10 +64,11 @@ public class Tonk extends ApplicationAdapter {
 	}
 
 	private void doneLoading() {
-		Model ship = assets.get("models/ship.obj", Model.class);
-		for (float x = -10f; x <= 10f; x += 2f) {
-			for (float y = -10f; y <= 10f; y += 2f) {
-				for (float z = -10f; z <= 10f; z += 2f) {
+		int size = 10;
+		Model ship = assets.get("models/ship.g3db", Model.class);
+		for (float x = -size; x <= size; x += 2f) {
+			for (float y = -size; y <= size; y += 2f) {
+				for (float z = -size; z <= size; z += 2f) {
 					ModelInstance shipInstance = new ModelInstance(ship);
 					shipInstance.transform.setToTranslation(x, y, z);
 					instances.add(shipInstance);
@@ -77,6 +80,9 @@ public class Tonk extends ApplicationAdapter {
 
 	@Override
 	public void render () {
+		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+			Gdx.app.exit();
+		}
 		Gdx.graphics.setTitle("tonk | FPS: " + Gdx.graphics.getFramesPerSecond());
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
