@@ -1,4 +1,4 @@
-package me.flogo.tonk.launch;
+package me.flogo.tonk.settings;
 
 public class Settings {
     public static boolean vSync = false;

@@ -15,9 +15,10 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.SpotLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.utils.Array;
+import me.flogo.tonk.settings.Settings;
+import me.flogo.tonk.settings.SettingsDevMode;
 
 public class Tonk extends ApplicationAdapter {
-	public static LaunchType launchType;
 	public boolean loading;
 	public boolean devMode = true;
 
@@ -31,8 +32,7 @@ public class Tonk extends ApplicationAdapter {
 	public DirectionalLight directionalLight;
 
 
-	public Tonk(LaunchType launchType) {
-		this.launchType = launchType;
+	public Tonk() {
 	}
 
 	@Override
@@ -64,8 +64,12 @@ public class Tonk extends ApplicationAdapter {
 	}
 
 	private void doneLoading() {
-		int size = 10;
+		int size = 4;
 		Model ship = assets.get("models/ship.g3db", Model.class);
+		if (devMode && SettingsDevMode.wireframeMode) {
+			ship.meshParts.get(0).primitiveType = GL20.GL_LINES;
+
+		}
 		for (float x = -size; x <= size; x += 2f) {
 			for (float y = -size; y <= size; y += 2f) {
 				for (float z = -size; z <= size; z += 2f) {
@@ -74,6 +78,9 @@ public class Tonk extends ApplicationAdapter {
 					instances.add(shipInstance);
 				}
 			}
+		}
+		for (ModelInstance instance : instances) {
+			System.out.println(instance);
 		}
 		loading = false;
 	}
@@ -90,6 +97,9 @@ public class Tonk extends ApplicationAdapter {
 			doneLoading();
 		directionalLight.setDirection(-1f, -0.8f, -0.2f);
 		modelBatch.begin(cam);
+//		if (SettingsDevMode.wireframeMode) {
+//			Gdx.gl.glLineWidth(SettingsDevMode.wireframeSize);
+//		}
 		modelBatch.render(instances, environment);
 		modelBatch.end();
 	}
