@@ -3,7 +3,7 @@ package me.flogo.tonk.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import me.flogo.tonk.settings.Settings;
-import me.flogo.tonk.launch.Tonk;
+import me.flogo.tonk.main.Tonk;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {

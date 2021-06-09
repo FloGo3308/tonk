@@ -1,4 +1,4 @@
-package me.flogo.tonk.launch;
+package me.flogo.tonk.main;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -15,12 +15,16 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.SpotLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Logger;
 import me.flogo.tonk.settings.Settings;
 import me.flogo.tonk.settings.SettingsDevMode;
 
 public class Tonk extends ApplicationAdapter {
-	public boolean loading;
-	public boolean devMode = true;
+	public static Tonk INSTANCE;
+	public static GameLoop gameLoop;
+	public static boolean loading;
+	public static boolean devMode = true;
+	public static Logger LOGGER = new Logger("logger", devMode ? Logger.DEBUG : Logger.INFO);
 
 	public ModelBatch modelBatch;
 	public AssetManager assets;
@@ -37,6 +41,11 @@ public class Tonk extends ApplicationAdapter {
 
 	@Override
 	public void create () {
+		INSTANCE = this;
+		if (GameLoop.shouldMakeNewGameLoop()) {
+			gameLoop = new GameLoop();
+			gameLoop.start();
+		}
 		modelBatch = new ModelBatch();
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
@@ -64,10 +73,11 @@ public class Tonk extends ApplicationAdapter {
 	}
 
 	private void doneLoading() {
-		int size = 4;
+		int size = 20;
+		size--;
 		Model ship = assets.get("models/ship.g3db", Model.class);
-		if (devMode && SettingsDevMode.wireframeMode) {
-			ship.meshParts.get(0).primitiveType = GL20.GL_LINES;
+		if (devMode && SettingsDevMode.wireframe) {
+			ship.meshParts.get(0).primitiveType = SettingsDevMode.wireframeMode;
 
 		}
 		for (float x = -size; x <= size; x += 2f) {
@@ -78,9 +88,6 @@ public class Tonk extends ApplicationAdapter {
 					instances.add(shipInstance);
 				}
 			}
-		}
-		for (ModelInstance instance : instances) {
-			System.out.println(instance);
 		}
 		loading = false;
 	}
@@ -97,9 +104,9 @@ public class Tonk extends ApplicationAdapter {
 			doneLoading();
 		directionalLight.setDirection(-1f, -0.8f, -0.2f);
 		modelBatch.begin(cam);
-//		if (SettingsDevMode.wireframeMode) {
-//			Gdx.gl.glLineWidth(SettingsDevMode.wireframeSize);
-//		}
+		if (SettingsDevMode.wireframe) {
+			Gdx.gl.glLineWidth(SettingsDevMode.wireframeSize);
+		}
 		modelBatch.render(instances, environment);
 		modelBatch.end();
 	}
