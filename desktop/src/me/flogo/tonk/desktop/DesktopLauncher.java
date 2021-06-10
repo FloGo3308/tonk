@@ -1,5 +1,6 @@
 package me.flogo.tonk.desktop;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import me.flogo.tonk.settings.Settings;
@@ -10,10 +11,12 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 1280;
 		config.height = 720;
+//		config.width = 800;
+//		config.height = 450;
 		config.vSyncEnabled = Settings.vSync;
 		config.foregroundFPS = Settings.fpsLimit;
 		config.backgroundFPS = Settings.fpsLimit;
-//		config.addIcon("tonk_logo_new.png", Files.FileType.Internal);
+		config.addIcon("tonk_logo_new.png", Files.FileType.Internal);
 		new LwjglApplication(new Tonk(), config);
 	}
 }

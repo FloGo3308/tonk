@@ -17,17 +17,23 @@ public class GameLoop extends Thread{
             pre();
             packet();
             post();
-            while ((System.currentTimeMillis()-lastTimeMS)/1000F < 1F/TARGET_TPS) {;}
-            delta = (int) (System.currentTimeMillis()-lastTimeMS);
-            if ((delta)/1000F != 1F/TARGET_TPS) {
-                Tonk.LOGGER.error("BAD TIMING! RUNNING " + (delta-1000/TARGET_TPS)/1000F + "SECONDS  BEHIND");
+//            Tonk.LOGGER.info(String.valueOf((delta-1000/TARGET_TPS)));
+            if (!(delta <= 100 && delta >= 0)) {
+                Tonk.LOGGER.error("we fucked");
             }
+            while ((System.currentTimeMillis()-lastTimeMS+(delta <= 100 && delta >= 0 && !Tonk.loading ? (delta-1000/TARGET_TPS)*2 : 0)) < 1000/TARGET_TPS) {;} //+(delta < 100 && delta > -100 && !Tonk.loading ? (int)delta : 0)
+//            delta = (int) (System.currentTimeMillis()-lastTimeMS);
+//            Tonk.LOGGER.info(String.valueOf(delta));
+            if ((delta)/1000F != 1F/TARGET_TPS) {
+                Tonk.LOGGER.info("BAD TIMING! RUNNING " + (delta-1000/TARGET_TPS) + "MS  BEHIND, SKIPPING THOSE NEXT TICK");
+            }
+            delta = (int) (System.currentTimeMillis()-lastTimeMS);
+//            Tonk.LOGGER.info(String.valueOf(delta));
             lastTimeMS = System.currentTimeMillis();
         }
     }
 
     private void pre() {
-
     }
 
     private void packet() {

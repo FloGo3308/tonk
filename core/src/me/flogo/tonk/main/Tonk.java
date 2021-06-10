@@ -73,7 +73,7 @@ public class Tonk extends ApplicationAdapter {
 	}
 
 	private void doneLoading() {
-		int size = 20;
+		int size = 1;
 		size--;
 		Model ship = assets.get("models/ship.g3db", Model.class);
 		if (devMode && SettingsDevMode.wireframe) {
