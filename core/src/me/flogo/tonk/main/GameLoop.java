@@ -2,8 +2,8 @@ package me.flogo.tonk.main;
 
 public class GameLoop extends Thread{
     private static GameLoop INSTANCE = null;
-    public static int TARGET_TPS = 20;
-    public int tick = 0;
+    public static int TARGET_TPS = 10;
+    public int ticks = 0;
     public long lastTimeMS = 0;
     private int delta = 0;
 
@@ -18,22 +18,27 @@ public class GameLoop extends Thread{
             packet();
             post();
 //            Tonk.LOGGER.info(String.valueOf((delta-1000/TARGET_TPS)));
-            if (!(delta <= 100 && delta >= 0)) {
+            if (!(delta <= 1000/TARGET_TPS*2 && delta > 0)) {
                 Tonk.LOGGER.error("we fucked");
             }
-            while ((System.currentTimeMillis()-lastTimeMS+(delta <= 100 && delta >= 0 && !Tonk.loading ? (delta-1000/TARGET_TPS)*2 : 0)) < 1000/TARGET_TPS) {;} //+(delta < 100 && delta > -100 && !Tonk.loading ? (int)delta : 0)
-//            delta = (int) (System.currentTimeMillis()-lastTimeMS);
-//            Tonk.LOGGER.info(String.valueOf(delta));
-            if ((delta)/1000F != 1F/TARGET_TPS) {
-                Tonk.LOGGER.info("BAD TIMING! RUNNING " + (delta-1000/TARGET_TPS) + "MS  BEHIND, SKIPPING THOSE NEXT TICK");
-            }
+            while ((System.currentTimeMillis()-lastTimeMS+(delta <= 1000/TARGET_TPS*5  && delta > 1000/TARGET_TPS /**&& !Tonk.loading**/ ? delta-1000/TARGET_TPS : 0)) < 1000/TARGET_TPS) {;} //+(delta < 100 && delta > -100 && !Tonk.loading ? (int)delta : 0)
             delta = (int) (System.currentTimeMillis()-lastTimeMS);
 //            Tonk.LOGGER.info(String.valueOf(delta));
+            if ((delta)/1000F != 1F/TARGET_TPS) {
+                String text = (delta-1000/TARGET_TPS) >= 0 ? "RUNNING " + (delta-1000/TARGET_TPS) + "MS  BEHIND, SKIPPING THOSE NEXT TICK." :
+                        "SKIPPED " + -(delta-1000/TARGET_TPS) + " MS.";
+//                Tonk.LOGGER.info("BAD TIMING! "+text);
+            }
+            delta = (int) (System.currentTimeMillis()-lastTimeMS);
             lastTimeMS = System.currentTimeMillis();
+            ticks++;
         }
     }
 
     private void pre() {
+        if (ticks % TARGET_TPS == 0) {
+            Tonk.LOGGER.info("important timed thingie " + ticks);
+        }
     }
 
     private void packet() {
