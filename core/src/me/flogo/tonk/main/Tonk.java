@@ -3,21 +3,22 @@ package me.flogo.tonk.main;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.SpotLight;
+import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Logger;
+import me.flogo.tonk.scene.Scene;
 import me.flogo.tonk.settings.Settings;
 import me.flogo.tonk.settings.SettingsDevMode;
+
+import java.nio.IntBuffer;
 
 public class Tonk extends ApplicationAdapter {
 	public static Tonk INSTANCE;
@@ -26,14 +27,9 @@ public class Tonk extends ApplicationAdapter {
 	public static boolean devMode = true;
 	public static Logger LOGGER = new Logger("logger", devMode ? Logger.DEBUG : Logger.INFO);
 
-	public ModelBatch modelBatch;
-	public AssetManager assets;
-	public Array<ModelInstance> instances = new Array<ModelInstance>();
-
-	public PerspectiveCamera cam;
 	public CameraInputController camController;
-	public Environment environment;
 	public DirectionalLight directionalLight;
+	public Scene currentScene;
 
 
 	public Tonk() {
@@ -46,38 +42,43 @@ public class Tonk extends ApplicationAdapter {
 			gameLoop = new GameLoop();
 			gameLoop.start();
 		}
-		modelBatch = new ModelBatch();
-		environment = new Environment();
-		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
+		currentScene = new Scene();
+		currentScene.init();
+
+		currentScene.environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
 		directionalLight = new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f);
 //		directionalLight = new DirectionalShadowLight(1000, 1000).set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f);
 		SpotLight spotlight = new SpotLight().set(1F, 1F, 1F, 5F, 5F, 5F, -1F, -1F, -1F, 1F, 1F, 100F);
-		environment.add(directionalLight);
-		environment.add(spotlight);
+		currentScene.environment.add(directionalLight);
+		currentScene.environment.add(spotlight);
 
-		cam = new PerspectiveCamera(Settings.fov, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		cam.position.set(2f, 2f, 2f);
-		cam.lookAt(0,0,0);
-		cam.near = 0.1f;
-		cam.far = 300f;
-		cam.update();
-		camController = new CameraInputController(cam);
+		currentScene.cam = new PerspectiveCamera(Settings.fov, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		currentScene.cam.position.set(2f, 2f, 2f);
+		currentScene.cam.lookAt(0,0,0);
+		currentScene.cam.near = 0.1f;
+		currentScene.cam.far = 300f;
+		currentScene.cam.update();
+		camController = new CameraInputController(currentScene.cam);
 		Gdx.input.setInputProcessor(camController);
 
-		assets = new AssetManager();
-		assets.load("models/ship.g3db", Model.class);
+		currentScene.assets.load("models/KV-2_one_object.g3db", Model.class);
 		loading = true;
 
 //		ModelBuilder modelBuilder = new ModelBuilder();
 //		Model model = modelBuilder.createBox(5f, 5f, 5f, new Material(ColorAttribute.createDiffuse(Color.GREEN)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+		IntBuffer buffer = BufferUtils.newIntBuffer(16);
+		Gdx.gl.glGetIntegerv(GL20.GL_DEPTH_BITS, buffer);
+		System.out.println("Depth bits: " + buffer.get());
 	}
 
 	private void doneLoading() {
 		int size = 1;
 		size--;
-		Model ship = assets.get("models/ship.g3db", Model.class);
+		Model ship = currentScene.assets.get("models/KV-2_one_object.g3db", Model.class);
 		if (devMode && SettingsDevMode.wireframe) {
-			ship.meshParts.get(0).primitiveType = SettingsDevMode.wireframeMode;
+			for (MeshPart part : ship.meshParts) {
+				part.primitiveType = SettingsDevMode.wireframeMode;
+			}
 
 		}
 		for (float x = -size; x <= size; x += 2f) {
@@ -85,7 +86,7 @@ public class Tonk extends ApplicationAdapter {
 				for (float z = -size; z <= size; z += 2f) {
 					ModelInstance shipInstance = new ModelInstance(ship);
 					shipInstance.transform.setToTranslation(x, y, z);
-					instances.add(shipInstance);
+					currentScene.instances.add(shipInstance);
 				}
 			}
 		}
@@ -100,22 +101,15 @@ public class Tonk extends ApplicationAdapter {
 		Gdx.graphics.setTitle("tonk | FPS: " + Gdx.graphics.getFramesPerSecond());
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-		if (loading && assets.update())
+		if (loading && currentScene.assets.update())
 			doneLoading();
 		directionalLight.setDirection(-1f, -0.8f, -0.2f);
-		modelBatch.begin(cam);
-		if (SettingsDevMode.wireframe) {
-			Gdx.gl.glLineWidth(SettingsDevMode.wireframeSize);
-		}
-		modelBatch.render(instances, environment);
-		modelBatch.end();
+		currentScene.render();
 	}
 
 	@Override
 	public void dispose () {
-		modelBatch.dispose();
-		instances.clear();
-		assets.dispose();
+		currentScene.dispose();
 	}
 
 	@Override
@@ -129,6 +123,4 @@ public class Tonk extends ApplicationAdapter {
 	@Override
 	public void pause () {
 	}
-
-
 }
