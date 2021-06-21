@@ -9,7 +9,8 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 //		config.setBackBufferConfig(8,8,8,8,24,0,0);
-		config.setWindowedMode(1280, 720);
+//		config.setWindowedMode(1280, 720);
+		config.setWindowedMode(128, 72);
 //		config.width = 800;
 //		config.height = 450;
 		config.useVsync(Settings.vSync);
