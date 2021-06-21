@@ -48,9 +48,9 @@ public class Tonk extends ApplicationAdapter {
 		currentScene.environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
 		directionalLight = new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f);
 //		directionalLight = new DirectionalShadowLight(1000, 1000).set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f);
-		SpotLight spotlight = new SpotLight().set(1F, 1F, 1F, 5F, 5F, 5F, -1F, -1F, -1F, 1F, 1F, 100F);
+		DirectionalLight directionalLight1 = new DirectionalLight().set(0.01f, 0.01f, 0.01f, 1f, 0.8f, 0.2f);
 		currentScene.environment.add(directionalLight);
-		currentScene.environment.add(spotlight);
+		currentScene.environment.add(directionalLight1);
 
 		currentScene.cam = new PerspectiveCamera(Settings.fov, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		currentScene.cam.position.set(2f, 2f, 2f);
