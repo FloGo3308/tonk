@@ -4,7 +4,7 @@ targetCompatibility = 1.8
 sourceSets.main.java.srcDirs = [ "clientsrc/" ]
 sourceSets.main.resources.srcDirs = ["../core/assets"]
 
-project.ext.mainClassName = "me.flogo.tonk.desktop.DesktopLauncher"
+project.ext.mainClassName = "me.flogo.tonk.server.ServerLauncher"
 project.ext.assetsDir = new File("../core/assets")
 
 task run(dependsOn: classes, type: JavaExec) {
@@ -38,4 +38,4 @@ task dist(type: Jar) {
 
 dist.dependsOn classes
 
-eclipse.project.name = appName + "-desktop"
+eclipse.project.name = appName + "-server"
