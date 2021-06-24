@@ -3,6 +3,6 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-sourceSets.main.java.srcDirs = [ "clientsrc/" ]
+sourceSets.main.java.srcDirs = [ "clientsrc/", "serversrc/" ]
 
 eclipse.project.name = appName + "-core"
