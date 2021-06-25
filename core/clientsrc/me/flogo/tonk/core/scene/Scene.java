@@ -1,4 +1,4 @@
-package me.flogo.tonk.scene;
+package me.flogo.tonk.core.scene;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.utils.Array;
-import me.flogo.tonk.settings.SettingsDevMode;
+import me.flogo.tonk.core.settings.SettingsDevMode;
 
 public class Scene {
     public Environment environment;

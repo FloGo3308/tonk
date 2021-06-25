@@ -1,4 +1,4 @@
-package me.flogo.tonk.main;
+package me.flogo.tonk.core.main;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -9,20 +9,19 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.environment.SpotLight;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Logger;
-import me.flogo.tonk.scene.Scene;
-import me.flogo.tonk.settings.Settings;
-import me.flogo.tonk.settings.SettingsDevMode;
+import me.flogo.tonk.core.scene.Scene;
+import me.flogo.tonk.core.settings.Settings;
+import me.flogo.tonk.core.settings.SettingsDevMode;
 
 import java.nio.IntBuffer;
 
 public class Tonk extends ApplicationAdapter {
 	public static Tonk INSTANCE;
-	public static GameLoop gameLoop;
+	public static me.flogo.tonk.core.main.GameLoop gameLoop;
 	public static boolean loading;
 	public static boolean devMode = true;
 	public static Logger LOGGER = new Logger("logger", devMode ? Logger.DEBUG : Logger.INFO);
@@ -38,8 +37,8 @@ public class Tonk extends ApplicationAdapter {
 	@Override
 	public void create () {
 		INSTANCE = this;
-		if (GameLoop.shouldMakeNewGameLoop()) {
-			gameLoop = new GameLoop();
+		if (me.flogo.tonk.core.main.GameLoop.shouldMakeNewGameLoop()) {
+			gameLoop = new me.flogo.tonk.core.main.GameLoop();
 			gameLoop.start();
 		}
 		currentScene = new Scene();

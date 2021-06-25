@@ -1,4 +1,4 @@
-package me.flogo.tonk.server;
+package me.flogo.tonk.server.launch;
 
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 

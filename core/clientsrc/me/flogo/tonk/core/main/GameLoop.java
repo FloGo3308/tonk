@@ -1,6 +1,4 @@
-package me.flogo.tonk.main;
-
-import static me.flogo.tonk.main.Tonk.*;
+package me.flogo.tonk.core.main;
 
 public class GameLoop extends Thread{
     private static GameLoop INSTANCE = null;

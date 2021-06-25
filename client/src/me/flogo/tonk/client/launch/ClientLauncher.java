@@ -1,12 +1,12 @@
-package me.flogo.tonk.desktop;
+package me.flogo.tonk.client.launch;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import me.flogo.tonk.main.Tonk;
-import me.flogo.tonk.settings.Settings;
+import me.flogo.tonk.core.main.Tonk;
+import me.flogo.tonk.core.settings.Settings;
 import org.lwjgl.glfw.GLFW;
 
-public class DesktopLauncher {
+public class ClientLauncher {
 	public static void main (String[] arg) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setBackBufferConfig(8,8,8,8,24,0,0);

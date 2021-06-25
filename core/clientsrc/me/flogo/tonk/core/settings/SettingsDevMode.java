@@ -1,4 +1,4 @@
-package me.flogo.tonk.settings;
+package me.flogo.tonk.core.settings;
 
 import com.badlogic.gdx.graphics.GL20;
 
